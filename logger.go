@@ -8,29 +8,11 @@ import (
 	"os"
 )
 
-type LLogger struct {
+type tGameLogger struct {
 	logger *logrus.Logger
 }
 
-type LogEmailHook struct {
-}
-
-// Levels 需要监控的日志等级，只有命中列表中的日志等级才会触发Hook
-func (l *LogEmailHook) Levels() []logrus.Level {
-	return []logrus.Level{
-		logrus.PanicLevel,
-		logrus.FatalLevel,
-	}
-}
-
-// Fire 触发钩子函数，本实例为触发后发送邮件报警。
-func (l *LogEmailHook) Fire(entry *logrus.Entry) error {
-	// 触发loggerHook函数调用
-	fmt.Println("触发loggerHook函数调用")
-	return nil
-}
-
-func NewLogger(level string, filePath string) ILog {
+func NewTGameLogger(level string, filePath string, hooks ...logrus.Hook) ILog {
 	parseLevel, err := logrus.ParseLevel(level)
 	if err != nil {
 		panic(err.Error())
@@ -42,55 +24,76 @@ func NewLogger(level string, filePath string) ILog {
 	}
 	log := &logrus.Logger{
 		Out:   io.MultiWriter(f, os.Stdout),         // 文件 + 控制台输出
-		Level: parseLevel,                           // Debug日志等级
+		Level: parseLevel,                           // 日志等级
 		Hooks: make(map[logrus.Level][]logrus.Hook), // 初始化Hook Map,否则导致Hook添加过程中的空指针引用。
-		Formatter: &logrus.TextFormatter{ // 文本格式输出
-			FullTimestamp:   true,                  // 展示日期
+		Formatter: &logrus.JSONFormatter{ // Json形式输出
 			TimestampFormat: "2006-01-02 15:04:05", //日期格式
-			ForceColors:     false,                 // 颜色日志
 		},
 	}
-	log.AddHook(&LogEmailHook{})
-	log.Infof("日志开启成功")
-	return &LLogger{logger: log}
+	// 绑定Hook
+	for index, _ := range hooks {
+		log.AddHook(hooks[index])
+	}
+	log.Infof("日志服务启动成功")
+	return &tGameLogger{logger: log}
 }
 
-func (l *LLogger) Debug(args ...any) {
+func (l *tGameLogger) Debug(args ...any) {
 	l.logger.Debug(args...)
 }
 
-func (l *LLogger) Info(args ...any) {
+func (l *tGameLogger) Info(args ...any) {
 	l.logger.Info(args...)
 }
 
-func (l *LLogger) Warn(args ...any) {
+func (l *tGameLogger) Warn(args ...any) {
 	l.logger.Warn(args...)
 }
 
-func (l *LLogger) Error(args ...any) {
+func (l *tGameLogger) Error(args ...any) {
 	l.logger.Error(args...)
 }
 
-func (l *LLogger) Fatal(args ...any) {
+func (l *tGameLogger) Fatal(args ...any) {
 	l.logger.Fatal(args...)
 }
 
-func (l *LLogger) DebugWithContext(ctx context.Context, args ...any) {
-	l.logger.Debug(args...)
+func (l *tGameLogger) DebugWithContext(ctx context.Context, args ...any) {
+	l.logger.WithContext(ctx).Debug(args...)
 }
 
-func (l *LLogger) InfoWithContext(ctx context.Context, args ...any) {
-	l.logger.Info(args...)
+func (l *tGameLogger) InfoWithContext(ctx context.Context, args ...any) {
+	l.logger.WithContext(ctx).Info(args...)
 }
 
-func (l *LLogger) WarnWithContext(ctx context.Context, args ...any) {
-	l.logger.Warn(args...)
+func (l *tGameLogger) WarnWithContext(ctx context.Context, args ...any) {
+	l.logger.WithContext(ctx).Warn(args...)
 }
 
-func (l *LLogger) ErrorWithContext(ctx context.Context, args ...any) {
-	l.logger.Error(args...)
+func (l *tGameLogger) ErrorWithContext(ctx context.Context, args ...any) {
+	l.logger.WithContext(ctx).Error(args...)
 }
 
-func (l *LLogger) FatalWithContext(ctx context.Context, args ...interface{}) {
-	l.logger.Fatal(args...)
+func (l *tGameLogger) FatalWithContext(ctx context.Context, args ...any) {
+	l.logger.WithContext(ctx).Fatal(args...)
+}
+
+func (l *tGameLogger) DebugfWithContext(ctx context.Context, format string, args ...any) {
+	l.logger.WithContext(ctx).Debugf(format, args...)
+}
+
+func (l *tGameLogger) InfofWithContext(ctx context.Context, format string, args ...any) {
+	l.logger.WithContext(ctx).Infof(format, args...)
+}
+
+func (l *tGameLogger) WarnfWithContext(ctx context.Context, format string, args ...any) {
+	l.logger.WithContext(ctx).Warnf(format, args...)
+}
+
+func (l *tGameLogger) ErrorfWithContext(ctx context.Context, format string, args ...any) {
+	l.logger.WithContext(ctx).Errorf(format, args...)
+}
+
+func (l *tGameLogger) FatalfWithContext(ctx context.Context, format string, args ...any) {
+	l.logger.WithContext(ctx).Fatalf(format, args...)
 }
