@@ -1,4 +1,4 @@
-module gameLogger
+module github.com/Meng-Xin/logger
 
 go 1.22.0
 
