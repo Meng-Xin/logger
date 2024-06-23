@@ -25,4 +25,15 @@ type ILog interface {
 	ErrorWithContext(ctx context.Context, args ...any)
 	// FatalWithContext 存在链路关系-fatal
 	FatalWithContext(ctx context.Context, args ...any)
+
+	// DebugfWithContext 存在链路关系-debug
+	DebugfWithContext(ctx context.Context, format string, args ...any)
+	// InfofWithContext 存在链路关系-info
+	InfofWithContext(ctx context.Context, format string, args ...any)
+	// WarnfWithContext 存在链路关系-war
+	WarnfWithContext(ctx context.Context, format string, args ...any)
+	// ErrorfWithContext 存在链路关系-error
+	ErrorfWithContext(ctx context.Context, format string, args ...any)
+	// FatalfWithContext 存在链路关系-fatal
+	FatalfWithContext(ctx context.Context, format string, args ...any)
 }
