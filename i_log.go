@@ -15,25 +15,14 @@ type ILog interface {
 	// Fatal 无链路关系-Fatal
 	Fatal(args ...any)
 
-	// DebugWithContext 存在链路关系-debug
-	DebugWithContext(ctx context.Context, args ...any)
-	// InfoWithContext 存在链路关系-info
-	InfoWithContext(ctx context.Context, args ...any)
-	// WarnWithContext 存在链路关系-war
-	WarnWithContext(ctx context.Context, args ...any)
-	// ErrorWithContext 存在链路关系-error
-	ErrorWithContext(ctx context.Context, args ...any)
-	// FatalWithContext 存在链路关系-fatal
-	FatalWithContext(ctx context.Context, args ...any)
-
-	// DebugfWithContext 存在链路关系-debug
-	DebugfWithContext(ctx context.Context, format string, args ...any)
-	// InfofWithContext 存在链路关系-info
-	InfofWithContext(ctx context.Context, format string, args ...any)
-	// WarnfWithContext 存在链路关系-war
-	WarnfWithContext(ctx context.Context, format string, args ...any)
-	// ErrorfWithContext 存在链路关系-error
-	ErrorfWithContext(ctx context.Context, format string, args ...any)
-	// FatalfWithContext 存在链路关系-fatal
-	FatalfWithContext(ctx context.Context, format string, args ...any)
+	// DebugContext 使用ctx传递上下文，使用日志链路追踪需要使用该方法
+	DebugContext(ctx context.Context, format string, args ...any)
+	// InfoContext 使用ctx传递上下文，使用日志链路追踪需要使用该方法
+	InfoContext(ctx context.Context, format string, args ...any)
+	// WarnContext 使用ctx传递上下文，使用日志链路追踪需要使用该方法
+	WarnContext(ctx context.Context, format string, args ...any)
+	// ErrContext 使用ctx传递上下文，使用日志链路追踪需要使用该方法
+	ErrContext(ctx context.Context, format string, args ...any)
+	// FatalContext 使用ctx传递上下文，使用日志链路追踪需要使用该方法
+	FatalContext(ctx context.Context, format string, args ...any)
 }

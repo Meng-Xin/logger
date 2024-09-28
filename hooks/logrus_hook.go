@@ -1,11 +1,11 @@
-package logger
+package hooks
 
 import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 )
 
-// emailLoggerHook 邮件日志hook
+// emailLoggerHook 邮件日志hook TODO Options 支持参数配置
 type emailLoggerHook struct {
 }
 
@@ -28,7 +28,7 @@ func (l *emailLoggerHook) Fire(entry *logrus.Entry) error {
 	return nil
 }
 
-// kafkaLoggerHook kafka消息队列日志hook
+// kafkaLoggerHook kafka消息队列日志hook TODO Options 支持参数配置
 type kafkaLoggerHook struct{}
 
 func NewKafkaLoggerHook() logrus.Hook {
