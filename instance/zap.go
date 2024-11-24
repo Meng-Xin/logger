@@ -14,12 +14,13 @@ type Options func(config *ZapConfig)
 
 // ZapConfig zap 日志配置类
 type ZapConfig struct {
-	Leave      string //日志等级
-	FilePath   string //日志路径
-	MaxSize    int    //单文件最大单位MB
-	MaxBackups int    //最大分割数
-	MaxAge     int    //最大保存时间
-	Compress   bool   //是否压缩处理
+	Leave       string //日志等级
+	ServiceName string //服务名
+	MaxSize     int    //单文件最大单位MB
+	MaxBackups  int    //最大分割数
+	MaxAge      int    //最大保存时间
+	Compress    bool   //是否压缩处理
+	FilePath    string //日志路径
 }
 
 // defaultZapConfig 默认实例配置
@@ -44,9 +45,9 @@ func NewZapConfig(options ...Options) *ZapConfig {
 	return &cfg
 }
 
-// WithFilePath 设置文件路径-需传入对应服务名
+// WithServiceName 设置文件路径-需传入对应服务名
 // 例如：hello -> 日志路径 /logger/logs/hello/hello.log
-func WithFilePath(serviceName string) Options {
+func WithServiceName(serviceName string) Options {
 	return func(cfg *ZapConfig) {
 		cfg.FilePath = fmt.Sprintf("../logs/%s/%s.log", serviceName, serviceName)
 	}

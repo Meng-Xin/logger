@@ -10,7 +10,7 @@ import (
 
 func TestNewZapLogCenter(t *testing.T) {
 	config := NewZapConfig(
-		WithFilePath("test"),
+		WithServiceName("test"),
 		WithMaxSize(1),
 		WithMaxBackups(1),
 		WithMaxAge(1),
