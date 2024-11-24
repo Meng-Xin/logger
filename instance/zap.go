@@ -12,28 +12,26 @@ import (
 
 type Options func(config *ZapConfig)
 
+// ZapConfig zap 日志配置类
 type ZapConfig struct {
-	// 日志配置
-	Leave      string
-	FilePath   string
-	MaxSize    int
-	MaxBackups int
-	MaxAge     int
-	Compress   bool
-	// 上下文配置
-	Service string
+	Leave      string //日志等级
+	FilePath   string //日志路径
+	MaxSize    int    //单文件最大单位MB
+	MaxBackups int    //最大分割数
+	MaxAge     int    //最大保存时间
+	Compress   bool   //是否压缩处理
 }
 
 // defaultZapConfig 默认实例配置
 func defaultZapConfig() ZapConfig {
 	config := ZapConfig{
+		Leave:      logger.Debug,
+		FilePath:   logger.DefaultFilePath,
 		MaxSize:    5,
 		MaxBackups: 5,
 		MaxAge:     30,
 		Compress:   false,
-		Service:    "default_service",
 	}
-	config.FilePath = fmt.Sprintf("./logs/%s/%s.log", config.Service, config.Service)
 	return config
 }
 
@@ -46,39 +44,39 @@ func NewZapConfig(options ...Options) *ZapConfig {
 	return &cfg
 }
 
-func WithFilePath(filePath string) Options {
+// WithFilePath 设置文件路径-需传入对应服务名
+// 例如：hello -> 日志路径 /logger/logs/hello/hello.log
+func WithFilePath(serviceName string) Options {
 	return func(cfg *ZapConfig) {
-		cfg.FilePath = filePath
+		cfg.FilePath = fmt.Sprintf("../logs/%s/%s.log", serviceName, serviceName)
 	}
 }
 
+// WithMaxSize 设置文件最大单位 MB
 func WithMaxSize(maxSize int) Options {
 	return func(cfg *ZapConfig) {
 		cfg.MaxSize = maxSize
 	}
 }
 
+// WithMaxBackups 设置最大分割数
 func WithMaxBackups(maxBackups int) Options {
 	return func(cfg *ZapConfig) {
 		cfg.MaxBackups = maxBackups
 	}
 }
 
+// WithMaxAge 设置最大保存时间
 func WithMaxAge(age int) Options {
 	return func(cfg *ZapConfig) {
 		cfg.MaxAge = age
 	}
 }
 
+// WithCompress 设置是否压缩处理
 func WithCompress(compress bool) Options {
 	return func(cfg *ZapConfig) {
 		cfg.Compress = compress
-	}
-}
-
-func WithService(service string) Options {
-	return func(cfg *ZapConfig) {
-		cfg.Service = service
 	}
 }
 
@@ -91,19 +89,19 @@ type zapCenter struct {
 func NewZapLogCenter(config *ZapConfig) logger.ILog {
 	var coreArr []zapcore.Core
 	//获取编码器
-	encoderConfig := zap.NewProductionEncoderConfig()            //NewJSONEncoder()输出json格式，NewConsoleEncoder()输出普通文本格式
-	encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder        //指定时间格式
-	encoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder //按级别显示不同颜色，不需要的话取值zapcore.CapitalLevelEncoder就可以了
-	//encoderConfig.EncodeCaller = zapcore.FullCallerEncoder        //显示完整文件路径
-	encoder := zapcore.NewConsoleEncoder(encoderConfig)
+	encoderConfig := zap.NewProductionEncoderConfig()
+	encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+	encoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder //按级别显示不同颜色，不需要的话取值zapcore.CapitalLevelEncoder就可以了
+	encoderConfig.EncodeCaller = zapcore.FullCallerEncoder  //显示完整文件路径
+	encoder := zapcore.NewJSONEncoder(encoderConfig)        //NewJSONEncoder()输出json格式，NewConsoleEncoder()输出普通文本格式
 
 	//日志级别 [Debug,Error]
 	allPriority := zap.LevelEnablerFunc(func(lev zapcore.Level) bool {
 		return lev >= getLogLeave(config.Leave)
 	})
 
-	//info文件writeSyncer
-	infoFileWriteSyncer := zapcore.AddSync(&lumberjack.Logger{
+	//日志本地写入
+	localFileWriteSyncer := zapcore.AddSync(&lumberjack.Logger{
 		Filename:   config.FilePath,   //日志文件存放目录，如果文件夹不存在会自动创建
 		MaxSize:    config.MaxSize,    //文件大小限制,单位MB
 		MaxBackups: config.MaxBackups, //最大保留日志文件数量
@@ -111,8 +109,7 @@ func NewZapLogCenter(config *ZapConfig) logger.ILog {
 		Compress:   config.Compress,   //是否压缩处理
 	})
 	//第三个及之后的参数为写入文件的日志级别,ErrorLevel模式只记录error级别的日志
-	allFileCore := zapcore.NewCore(encoder, zapcore.NewMultiWriteSyncer(infoFileWriteSyncer, zapcore.AddSync(os.Stdout)), allPriority)
-
+	allFileCore := zapcore.NewCore(encoder, zapcore.NewMultiWriteSyncer(localFileWriteSyncer, zapcore.AddSync(os.Stdout)), allPriority)
 	coreArr = append(coreArr, allFileCore)
 	//zap.AddCaller()为显示文件名和行号，可省略
 	log := zap.New(zapcore.NewTee(coreArr...), zap.AddCaller())
@@ -210,7 +207,7 @@ func getMessage(template string, fmtArgs ...any) string {
 
 // getTraceInfo 拿到日志上下文
 func getTraceInfo(ctx context.Context) (traceFields []zap.Field) {
-	if data := ctx.Value("TraceInfoKey"); data != nil {
+	if data := ctx.Value(logger.LogTraceInfoKey); data != nil {
 		if traceInfo, ok := data.(logger.TraceInfo); ok {
 			traceFields = []zap.Field{
 				zap.String("instance_id", traceInfo.InstanceID),

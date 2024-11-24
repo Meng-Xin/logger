@@ -10,12 +10,11 @@ import (
 
 func TestNewZapLogCenter(t *testing.T) {
 	config := NewZapConfig(
-		WithFilePath("./test.log"),
+		WithFilePath("test"),
 		WithMaxSize(1),
 		WithMaxBackups(1),
 		WithMaxAge(1),
 		WithCompress(false),
-		WithService("test_service"),
 	)
 	logCenter := NewZapLogCenter(config)
 
@@ -35,7 +34,15 @@ func TestNewZapLogCenter(t *testing.T) {
 	// logCenter.Fatal("fatal message") // 注意：运行此测试时会导致程序退出，可以注释掉这行代码
 
 	// 测试 DebugContext 方法
-	ctx := context.WithValue(context.Background(), "TraceInfoKey", logger.TraceInfo{})
+	ctx := context.WithValue(context.Background(), logger.LogTraceInfoKey, logger.TraceInfo{
+		InstanceID:     "",
+		ServiceName:    "test",
+		ServiceVersion: "1.0.0",
+		ServiceHost:    "127.0.0.1:8080",
+		CallType:       "grpc",
+		TraceID:        "b98f757b-e9b9-4e0c-a8b2-609c5cbcf990",
+		RequestPath:    "/test",
+	})
 	logCenter.DebugContext(ctx, "debug context message")
 
 	// 测试 InfoContext 方法
