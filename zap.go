@@ -93,7 +93,7 @@ func NewZapLogCenter(config *ZapConfig) ILog {
 	encoderConfig := zap.NewProductionEncoderConfig()
 	encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
 	encoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder //按级别显示不同颜色，不需要的话取值zapcore.CapitalLevelEncoder就可以了
-	encoderConfig.EncodeCaller = zapcore.FullCallerEncoder  //显示完整文件路径
+	encoderConfig.EncodeCaller = zapcore.ShortCallerEncoder //FullCallerEncoder显示完整文件路径
 	encoder := zapcore.NewJSONEncoder(encoderConfig)        //NewJSONEncoder()输出json格式，NewConsoleEncoder()输出普通文本格式
 
 	//日志级别 [Debug,Error]
