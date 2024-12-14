@@ -119,23 +119,23 @@ func NewZapLogCenter(config *ZapConfig) ILog {
 }
 
 func (z *zapCenter) Debug(args ...any) {
-	z.sugared.Debug(args...)
+	z.sugared.WithOptions(zap.AddCallerSkip(1)).Debug(args...)
 }
 
 func (z *zapCenter) Info(args ...any) {
-	z.sugared.Info(args...)
+	z.sugared.WithOptions(zap.AddCallerSkip(1)).Info(args...)
 }
 
 func (z *zapCenter) Warn(args ...any) {
-	z.sugared.Warn(args...)
+	z.sugared.WithOptions(zap.AddCallerSkip(1)).Warn(args...)
 }
 
 func (z *zapCenter) Error(args ...any) {
-	z.sugared.Error(args...)
+	z.sugared.WithOptions(zap.AddCallerSkip(1)).Error(args...)
 }
 
 func (z *zapCenter) Fatal(args ...any) {
-	z.sugared.Fatal(args...)
+	z.sugared.WithOptions(zap.AddCallerSkip(1)).Fatal(args...)
 }
 
 func (z *zapCenter) DebugContext(ctx context.Context, format string, args ...any) {
@@ -145,7 +145,7 @@ func (z *zapCenter) DebugContext(ctx context.Context, format string, args ...any
 	message := getMessage(format, args...)
 
 	// 使用 Logger 记录带有 traceFields 的结构化日志
-	z.logger.With(traceFields...).Debug(message)
+	z.logger.WithOptions(zap.AddCallerSkip(1)).With(traceFields...).Debug(message)
 }
 
 func (z *zapCenter) InfoContext(ctx context.Context, format string, args ...any) {
@@ -155,7 +155,7 @@ func (z *zapCenter) InfoContext(ctx context.Context, format string, args ...any)
 	message := getMessage(format, args...)
 
 	// 使用 Logger 记录带有 traceFields 的结构化日志
-	z.logger.With(traceFields...).Info(message)
+	z.logger.WithOptions(zap.AddCallerSkip(1)).With(traceFields...).Info(message)
 }
 
 func (z *zapCenter) WarnContext(ctx context.Context, format string, args ...any) {
@@ -165,7 +165,7 @@ func (z *zapCenter) WarnContext(ctx context.Context, format string, args ...any)
 	message := getMessage(format, args...)
 
 	// 使用 Logger 记录带有 traceFields 的结构化日志
-	z.logger.With(traceFields...).Warn(message)
+	z.logger.WithOptions(zap.AddCallerSkip(1)).With(traceFields...).Warn(message)
 }
 
 func (z *zapCenter) ErrContext(ctx context.Context, format string, args ...any) {
@@ -175,7 +175,7 @@ func (z *zapCenter) ErrContext(ctx context.Context, format string, args ...any) 
 	message := getMessage(format, args...)
 
 	// 使用 Logger 记录带有 traceFields 的结构化日志
-	z.logger.With(traceFields...).Error(message)
+	z.logger.WithOptions(zap.AddCallerSkip(1)).With(traceFields...).Error(message)
 }
 
 func (z *zapCenter) FatalContext(ctx context.Context, format string, args ...any) {
@@ -185,7 +185,7 @@ func (z *zapCenter) FatalContext(ctx context.Context, format string, args ...any
 	message := getMessage(format, args...)
 
 	// 使用 Logger 记录带有 traceFields 的结构化日志
-	z.logger.With(traceFields...).Fatal(message)
+	z.logger.WithOptions(zap.AddCallerSkip(1)).With(traceFields...).Fatal(message)
 }
 
 // getMessage format with Sprint, Sprintf, or neither.
