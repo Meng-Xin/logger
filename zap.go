@@ -211,13 +211,13 @@ func getTraceInfo(ctx context.Context) (traceFields []zap.Field) {
 	if data := ctx.Value(LogTraceInfoKey); data != nil {
 		if traceInfo, ok := data.(TraceInfo); ok {
 			traceFields = []zap.Field{
-				zap.String("instance_id", traceInfo.InstanceID),
+				zap.String("request_path", traceInfo.RequestPath),
+				zap.String("trace_id", traceInfo.TraceID),
 				zap.String("service_name", traceInfo.ServiceName),
+				zap.String("call_type", traceInfo.CallType),
+				zap.String("instance_id", traceInfo.InstanceID),
 				zap.String("service_version", traceInfo.ServiceVersion),
 				zap.String("service_host", traceInfo.ServiceHost),
-				zap.String("call_type", traceInfo.CallType),
-				zap.String("trace_id", traceInfo.TraceID),
-				zap.String("request_path", traceInfo.RequestPath),
 			}
 		}
 	}

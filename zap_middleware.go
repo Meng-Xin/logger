@@ -6,10 +6,10 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-func GinMiddleware(log ILog) gin.HandlerFunc {
+func GinMiddleware(log ILog, service string) gin.HandlerFunc {
 	logTrace := TraceInfo{
 		InstanceID:     "",
-		ServiceName:    "default",
+		ServiceName:    service,
 		ServiceVersion: "1.0.0",
 		ServiceHost:    GetLocalIP(),
 		CallType:       "HTTP",
