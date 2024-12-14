@@ -3,7 +3,6 @@ package logger
 import (
 	"context"
 	"fmt"
-	"github.com/Meng-Xin/logger"
 	"github.com/natefinch/lumberjack"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -26,8 +25,8 @@ type ZapConfig struct {
 // defaultZapConfig 默认实例配置
 func defaultZapConfig() ZapConfig {
 	config := ZapConfig{
-		Leave:      logger.Debug,
-		FilePath:   logger.DefaultFilePath,
+		Leave:      Debug,
+		FilePath:   DefaultFilePath,
 		MaxSize:    5,
 		MaxBackups: 5,
 		MaxAge:     30,
@@ -87,7 +86,7 @@ type zapCenter struct {
 	sugared *zap.SugaredLogger
 }
 
-func NewZapLogCenter(config *ZapConfig) logger.ILog {
+func NewZapLogCenter(config *ZapConfig) ILog {
 	var coreArr []zapcore.Core
 	//获取编码器
 	encoderConfig := zap.NewProductionEncoderConfig()
@@ -208,8 +207,8 @@ func getMessage(template string, fmtArgs ...any) string {
 
 // getTraceInfo 拿到日志上下文
 func getTraceInfo(ctx context.Context) (traceFields []zap.Field) {
-	if data := ctx.Value(logger.LogTraceInfoKey); data != nil {
-		if traceInfo, ok := data.(logger.TraceInfo); ok {
+	if data := ctx.Value(LogTraceInfoKey); data != nil {
+		if traceInfo, ok := data.(TraceInfo); ok {
 			traceFields = []zap.Field{
 				zap.String("instance_id", traceInfo.InstanceID),
 				zap.String("service_name", traceInfo.ServiceName),
@@ -225,20 +224,20 @@ func getTraceInfo(ctx context.Context) (traceFields []zap.Field) {
 }
 
 // getLogLeave 获取日志等级
-func getLogLeave(leave logger.LogLeave) zapcore.Level {
+func getLogLeave(leave LogLeave) zapcore.Level {
 	if leave == "" {
 		return zapcore.DebugLevel
 	}
 	switch leave {
-	case logger.Debug:
+	case Debug:
 		return zapcore.DebugLevel
-	case logger.Info:
+	case Info:
 		return zapcore.InfoLevel
-	case logger.Warn:
+	case Warn:
 		return zapcore.WarnLevel
-	case logger.Error:
+	case Error:
 		return zapcore.ErrorLevel
-	case logger.Fatal:
+	case Fatal:
 		return zapcore.FatalLevel
 	}
 	return zapcore.DebugLevel

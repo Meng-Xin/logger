@@ -1,18 +1,17 @@
 package logger
 
 import (
-	"github.com/Meng-Xin/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"go.opentelemetry.io/otel/trace"
 )
 
-func GinMiddleware(log logger.ILog) gin.HandlerFunc {
-	logTrace := logger.TraceInfo{
+func GinMiddleware(log ILog) gin.HandlerFunc {
+	logTrace := TraceInfo{
 		InstanceID:     "",
 		ServiceName:    "default",
 		ServiceVersion: "1.0.0",
-		ServiceHost:    logger.GetLocalIP(),
+		ServiceHost:    GetLocalIP(),
 		CallType:       "HTTP",
 		TraceID:        "",
 		SpanID:         "",
@@ -35,7 +34,7 @@ func GinMiddleware(log logger.ILog) gin.HandlerFunc {
 		} else {
 			logTrace.TraceID = uuid.New().String()
 		}
-		c.Set(logger.LogTraceInfoKey, logTrace)
+		c.Set(LogTraceInfoKey, logTrace)
 		// 入口日志
 		log.DebugContext(c, "======"+logTrace.RequestPath+"======"+"start")
 		c.Next()

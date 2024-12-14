@@ -2,7 +2,6 @@ package logger
 
 import (
 	"context"
-	"github.com/Meng-Xin/logger"
 	"testing"
 
 	"go.uber.org/zap/zapcore"
@@ -34,7 +33,7 @@ func TestNewZapLogCenter(t *testing.T) {
 	// logCenter.Fatal("fatal message") // 注意：运行此测试时会导致程序退出，可以注释掉这行代码
 
 	// 测试 DebugContext 方法
-	ctx := context.WithValue(context.Background(), logger.LogTraceInfoKey, logger.TraceInfo{
+	ctx := context.WithValue(context.Background(), LogTraceInfoKey, TraceInfo{
 		InstanceID:     "",
 		ServiceName:    "test",
 		ServiceVersion: "1.0.0",
@@ -80,7 +79,7 @@ func TestGetMessage(t *testing.T) {
 }
 
 func TestGetTraceInfo(t *testing.T) {
-	ctx := context.WithValue(context.Background(), "TraceInfoKey", logger.TraceInfo{
+	ctx := context.WithValue(context.Background(), "TraceInfoKey", TraceInfo{
 		InstanceID:     "test_instance_id",
 		ServiceName:    "test_service_name",
 		ServiceVersion: "test_service_version",
@@ -96,27 +95,27 @@ func TestGetTraceInfo(t *testing.T) {
 }
 
 func TestGetLogLeave(t *testing.T) {
-	level := getLogLeave(logger.Debug)
+	level := getLogLeave(Debug)
 	if level != zapcore.DebugLevel {
 		t.Errorf("Expected DebugLevel, got %v", level)
 	}
 
-	level = getLogLeave(logger.Info)
+	level = getLogLeave(Info)
 	if level != zapcore.InfoLevel {
 		t.Errorf("Expected InfoLevel, got %v", level)
 	}
 
-	level = getLogLeave(logger.Warn)
+	level = getLogLeave(Warn)
 	if level != zapcore.WarnLevel {
 		t.Errorf("Expected WarnLevel, got %v", level)
 	}
 
-	level = getLogLeave(logger.Error)
+	level = getLogLeave(Error)
 	if level != zapcore.ErrorLevel {
 		t.Errorf("Expected ErrorLevel, got %v", level)
 	}
 
-	level = getLogLeave(logger.Fatal)
+	level = getLogLeave(Fatal)
 	if level != zapcore.FatalLevel {
 		t.Errorf("Expected FatalLevel, got %v", level)
 	}
