@@ -12,4 +12,4 @@ const (
 )
 
 // DefaultFilePath 日志中心默认日志路径
-const DefaultFilePath = "./logs/default.log"
+const DefaultFilePath = "../logs/default.log"
