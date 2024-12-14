@@ -48,7 +48,8 @@ func NewZapConfig(options ...Options) *ZapConfig {
 // 例如：hello -> 日志路径 /logger/logs/hello/hello.log
 func WithServiceName(serviceName string) Options {
 	return func(cfg *ZapConfig) {
-		cfg.FilePath = fmt.Sprintf("../logs/%s/%s.log", serviceName, serviceName)
+		cfg.ServiceName = serviceName
+		cfg.FilePath = fmt.Sprintf("./logs/%s/%s.log", serviceName, serviceName)
 	}
 }
 
