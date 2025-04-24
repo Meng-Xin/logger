@@ -49,7 +49,7 @@ func NewZapConfig(options ...Options) *ZapConfig {
 func WithServiceName(serviceName string) Options {
 	return func(cfg *ZapConfig) {
 		cfg.ServiceName = serviceName
-		cfg.FilePath = fmt.Sprintf("../logs/%s/%s.log", serviceName, serviceName)
+		cfg.FilePath = fmt.Sprintf("./logs/%s/%s.log", serviceName, serviceName)
 	}
 }
 
