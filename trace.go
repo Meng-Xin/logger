@@ -3,7 +3,7 @@ package logger
 type ContextLogCenterKey = string
 
 const (
-	LogTraceInfoKey ContextLogCenterKey = "context_log_trace_key"
+	LogTraceInfoKey ContextLogCenterKey = "Trace-Info"
 )
 
 // TraceInfo 日志链路追踪信息
@@ -16,4 +16,16 @@ type TraceInfo struct {
 	TraceID        string `json:"trace_id"`        //追踪id:请求唯一id
 	SpanID         string `json:"span_id"`         //追踪单元:调用或操作的单个组件
 	RequestPath    string `json:"request_path"`    //请求路径
+}
+
+func SetHTTPTrace() {
+
+}
+
+func SetGrpcTrace() {
+
+}
+
+func SetTcpTrace() {
+
 }
