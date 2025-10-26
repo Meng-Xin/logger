@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"go.opentelemetry.io/otel/trace"
+	"strings"
 )
 
 func GinMiddleware(log ILog, service string) gin.HandlerFunc {
@@ -32,7 +33,8 @@ func GinMiddleware(log ILog, service string) gin.HandlerFunc {
 		} else if c.Param("trace_id") != "" {
 			logTrace.TraceID = c.Param("trace_id")
 		} else {
-			logTrace.TraceID = uuid.New().String()
+			rawUUID := uuid.New().String()
+			logTrace.TraceID = strings.ReplaceAll(rawUUID, "-", "")
 		}
 		c.Set(LogTraceInfoKey, logTrace)
 		// 入口日志

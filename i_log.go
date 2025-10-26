@@ -15,6 +15,17 @@ type ILog interface {
 	// Fatal 无链路关系-Fatal
 	Fatal(args ...any)
 
+	// Debugf 无链路关系-debug
+	Debugf(format string, args ...any)
+	// Infof 无链路关系-Info
+	Infof(format string, args ...any)
+	// Warnf 无链路关系-Warn
+	Warnf(format string, args ...any)
+	// Errorf 无链路关系-Error
+	Errorf(format string, args ...any)
+	// Fatalf 无链路关系-Fatal
+	Fatalf(format string, args ...any)
+
 	// DebugContext 使用ctx传递上下文，使用日志链路追踪需要使用该方法
 	DebugContext(ctx context.Context, format string, args ...any)
 	// InfoContext 使用ctx传递上下文，使用日志链路追踪需要使用该方法

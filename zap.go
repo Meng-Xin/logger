@@ -138,6 +138,26 @@ func (z *zapCenter) Fatal(args ...any) {
 	z.sugared.WithOptions(zap.AddCallerSkip(1)).Fatal(args...)
 }
 
+func (z *zapCenter) Debugf(format string, args ...any) {
+	z.sugared.WithOptions(zap.AddCallerSkip(1)).Debugf(format, args...)
+}
+
+func (z *zapCenter) Infof(format string, args ...any) {
+	z.sugared.WithOptions(zap.AddCallerSkip(1)).Infof(format, args...)
+}
+
+func (z *zapCenter) Warnf(format string, args ...any) {
+	z.sugared.WithOptions(zap.AddCallerSkip(1)).Warnf(format, args...)
+}
+
+func (z *zapCenter) Errorf(format string, args ...any) {
+	z.sugared.WithOptions(zap.AddCallerSkip(1)).Errorf(format, args...)
+}
+
+func (z *zapCenter) Fatalf(format string, args ...any) {
+	z.sugared.WithOptions(zap.AddCallerSkip(1)).Fatalf(format, args...)
+}
+
 func (z *zapCenter) DebugContext(ctx context.Context, format string, args ...any) {
 	// 获取上下文trace信息
 	traceFields := getTraceInfo(ctx)
